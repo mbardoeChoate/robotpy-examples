@@ -105,3 +105,7 @@ class MyRobot(wpilib.TimedRobot):
                     # Hybrid mode exists only on the PH! On the PCM, this enables digital control.
 
                     self.compressor.enableHybrid(70, 120)
+
+
+if __name__ == "__main__":
+    wpilib.run(MyRobot)
