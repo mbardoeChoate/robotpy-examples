@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+
+import wpilib
+from wpilib.shuffleboard import Shuffleboard
+
+"""This is a sample program showing the use of the solenoid classes during operator control. Three
+    buttons from a joystick will be used to control two solenoids: One button to control the position
+    of a single solenoid and the other two buttons to control a double solenoid. Single solenoids can
+    either be on or off, such that the air diverted through them goes through either one channel or
+    the other. Double solenoids have three states: Off, Forward, and Reverse. Forward and Reverse
+    divert the air through the two channels and correspond to the on and off of a single solenoid,
+    but a double solenoid can also be "off", where the solenoid will remain in its default power off
+    state. Additionally, double solenoids take up two channels on your PCM whereas single solenoids
+    only take a single channel.
+"""
+
+class MyRobot(wpilib.TimedRobot):
+
+    def robotInit(self):
+
+        self.joystick = wpilib.Joystick(0)
+
+        # Solenoid corresponds to a single solenoid.
+        # In this case, it's connected to channel 0 of a PH with the default CAN ID.
+
+        self.solenoid = wpilib.Solenoid(wpilib.PneumaticsModuleType.REVPH,0)
+
+
+        # DoubleSolenoid corresponds to a double solenoid.
+        # In this case, it's connected to channels 1 and 2 of a PH with the default CAN ID.
+
+        self.doubleSolenoid = wpilib.DoubleSolenoid(wpilib.PneumaticsModuleType.REVPH,1,2)
+
+        # Compressor connected to a PH with a default CAN ID (1)
+
+        self.compressor = wpilib.Compressor(wpilib.PneumaticsModuleType.REVPH)
+
+        self.kSolenoidButton = 1
+        self.kDoubleSolenoidForwardButton = 2
+        self.kDoubleSolenoidReverseButton = 3
+        self.kCompressorButton = 4
+
+        # Publish elements to shuffleboard
+
+        tab = Shuffleboard.getTab("Pneumatics")
+        tab.add("Single Solenoid", self.solenoid)
+        tab.add("Double Solenoid", self.doubleSolenoid)
+        tab.add("Compressor", self.compressor)
+
+        # Also publish some raw data
+        tab.addDouble(
+            "PH Pressure [PSI]",
+            lambda: self.compressor.getCompressorCurrent()
+        )
+        tab.addDouble(
+            "Compressor Current [A]",
+            lambda: self.compressor.getCompressorCurrent()
+        )
+        tab.addBoolean(
+            "Compressor Active",
+            lambda: self.compressor.enabled()
+        )
+        tab.addBoolean(
+            "Pressure Switch",
+            lambda: self.compressor.getPressureSwitchValue()
+        )
+
+
+    def teleopPeriodic(self):
+
+        # The output of GetRawButton is true/false depending on whether
+        # the button is pressed; Set takes a boolean for whether
+        # to retract the solenoid (false) or extend it (true).
+
+        self.solenoid.set(self.joystick.getRawButton(self.kSolenoidButton))
+
+        
+
+
