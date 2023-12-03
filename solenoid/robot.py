@@ -14,22 +14,22 @@ from wpilib.shuffleboard import Shuffleboard
     only take a single channel.
 """
 
+
 class MyRobot(wpilib.TimedRobot):
-
     def robotInit(self):
-
         self.joystick = wpilib.Joystick(0)
 
         # Solenoid corresponds to a single solenoid.
         # In this case, it's connected to channel 0 of a PH with the default CAN ID.
 
-        self.solenoid = wpilib.Solenoid(wpilib.PneumaticsModuleType.REVPH,0)
-
+        self.solenoid = wpilib.Solenoid(wpilib.PneumaticsModuleType.REVPH, 0)
 
         # DoubleSolenoid corresponds to a double solenoid.
         # In this case, it's connected to channels 1 and 2 of a PH with the default CAN ID.
 
-        self.doubleSolenoid = wpilib.DoubleSolenoid(wpilib.PneumaticsModuleType.REVPH,1,2)
+        self.doubleSolenoid = wpilib.DoubleSolenoid(
+            wpilib.PneumaticsModuleType.REVPH, 1, 2
+        )
 
         # Compressor connected to a PH with a default CAN ID (1)
 
@@ -49,25 +49,17 @@ class MyRobot(wpilib.TimedRobot):
 
         # Also publish some raw data
         tab.addDouble(
-            "PH Pressure [PSI]",
-            lambda: self.compressor.getCompressorCurrent()
+            "PH Pressure [PSI]", lambda: self.compressor.getCompressorCurrent()
         )
         tab.addDouble(
-            "Compressor Current [A]",
-            lambda: self.compressor.getCompressorCurrent()
+            "Compressor Current [A]", lambda: self.compressor.getCompressorCurrent()
         )
+        tab.addBoolean("Compressor Active", lambda: self.compressor.enabled())
         tab.addBoolean(
-            "Compressor Active",
-            lambda: self.compressor.enabled()
+            "Pressure Switch", lambda: self.compressor.getPressureSwitchValue()
         )
-        tab.addBoolean(
-            "Pressure Switch",
-            lambda: self.compressor.getPressureSwitchValue()
-        )
-
 
     def teleopPeriodic(self):
-
         # The output of GetRawButton is true/false depending on whether
         # the button is pressed; Set takes a boolean for whether
         # to retract the solenoid (false) or extend it (true).
