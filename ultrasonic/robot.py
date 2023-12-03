@@ -8,7 +8,7 @@ from wpilib import SmartDashboard
 class MyRobot(wpilib.TimedRobot):
     """
     This is a sample program demonstrating how to read from a ping-response ultrasonic sensor with
-    the Ultrasonic class.
+    the :class:`.Ultrasonic` class.
     """
 
     def robotInit(self):
