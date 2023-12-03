@@ -49,10 +49,10 @@ class MyRobot(wpilib.TimedRobot):
 
         # Also publish some raw data
         tab.addDouble(
-            "PH Pressure [PSI]", lambda: self.compressor.getCompressorCurrent()
+            "PH Pressure [PSI]", lambda: self.compressor.getCurrent()
         )
         tab.addDouble(
-            "Compressor Current [A]", lambda: self.compressor.getCompressorCurrent()
+            "Compressor Current [A]", lambda: self.compressor.getCurrent()
         )
         tab.addBoolean("Compressor Active", lambda: self.compressor.enabled())
         tab.addBoolean(
