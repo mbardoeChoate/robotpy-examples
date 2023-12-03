@@ -13,6 +13,8 @@ from wpimath.kinematics import SwerveModulePosition, SwerveModuleState
 from wpimath.trajectory import TrapezoidProfile
 from wpilib import Encoder, PWMMotorController, PWMSparkMax
 
+from drivetrain import Drivetrain
+
 import math
 
 
@@ -38,7 +40,7 @@ class SwerveModule:
     ):
         self.wheelRadius = 0.0508
         self.EncoderResolution = 4096
-        self.moduleMaxAngularVelocity = math.pi
+        self.moduleMaxAngularVelocity = Drivetrain.maxAngularSpeed
         self.moduleMaxAngularAcceleration = 2 * math.pi  # radians per second squared
 
         self.driveMotor = PWMSparkMax(driveMotorChannel)
