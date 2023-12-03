@@ -6,6 +6,7 @@ cd "$(dirname $0)"
 BASE_TESTS="
   addressableled
   arcade-drive
+  arcadedrivexboxcontroller
   arm-simulation
   commands-v2/hatchbot
   commands-v2/hatchbot-inlined
@@ -26,9 +27,11 @@ BASE_TESTS="
   physics-4wheel/src
   physics-mecanum/src
   physics-spi/src
+  solenoid
   shuffleboard
   stateful-autonomous
   state-space-flywheel
+  swervebot
   tank-drive
   timed/src
 "
