@@ -84,57 +84,57 @@ class SwerveModule:
 
         self.turningPIDController.enableContinuousInput(-math.pi, math.pi)
 
-        def getState() -> SwerveModuleState:
-            """Returns the current state of the module.
+    def getState(self) -> SwerveModuleState:
+        """Returns the current state of the module.
 
-            :return: The current state of the  module.
-            """
-            return SwerveModuleState(
-                self.driveEncoder.getRate(),
-                Rotation2d(self.turningEncoder.getDistance()),
-            )
+        :return: The current state of the  module.
+        """
+        return SwerveModuleState(
+            self.driveEncoder.getRate(),
+            Rotation2d(self.turningEncoder.getDistance()),
+        )
 
-        def getPosition() -> SwerveModulePosition:
-            """Returns the current position of the module.
+    def getPosition(self) -> SwerveModulePosition:
+        """Returns the current position of the module.
 
-            :return: The current position of the module.
-            """
-            return SwerveModulePosition(
-                self.driveEncoder.getDistance(),
-                Rotation2d(self.turningEncoder.getDistance()),
-            )
+        :return: The current position of the module.
+        """
+        return SwerveModulePosition(
+            self.driveEncoder.getDistance(),
+            Rotation2d(self.turningEncoder.getDistance()),
+        )
 
-        def setDesiredState(desiredState: SwerveModuleState) -> None:
-            """Sets the desired state for the module.
+    def setDesiredState(self, desiredState: SwerveModuleState) -> None:
+        """Sets the desired state for the module.
 
-            :param state: The desired state for the module.
-            """
-            encoderRotation = Rotation2d(self.turningEncoder.getDistance())
+        :param state: The desired state for the module.
+        """
+        encoderRotation = Rotation2d(self.turningEncoder.getDistance())
 
-            # Optimize the reference state to avoid spinning further than 90 degrees
-            state = SwerveModuleState.optimize(desiredState, encoderRotation)
+        # Optimize the reference state to avoid spinning further than 90 degrees
+        state = SwerveModuleState.optimize(desiredState, encoderRotation)
 
-            # Scale speed by cosine of angle error. This scales down movement perpendicular to the desired
-            # direction of travel that can occur when modules change directions. This results in smoother
-            # driving.
+        # Scale speed by cosine of angle error. This scales down movement perpendicular to the desired
+        # direction of travel that can occur when modules change directions. This results in smoother
+        # driving.
 
-            state.speed *= math.cos(encoderRotation.radians() - state.angle.radians())
+        state.speed *= math.cos(encoderRotation.radians() - state.angle.radians())
 
-            # Calculate the drive output from the drive PID controller.
-            driveOutput = self.drivePIDController.calculate(
-                self.driveEncoder.getRate(), state.speed
-            )
+        # Calculate the drive output from the drive PID controller.
+        driveOutput = self.drivePIDController.calculate(
+            self.driveEncoder.getRate(), state.speed
+        )
 
-            driveFeedForward = self.driveFeedForward.calculate(state.speed)
+        driveFeedForward = self.driveFeedForward.calculate(state.speed)
 
-            # Calculate the turning motor output from the turning PID controller.
+        # Calculate the turning motor output from the turning PID controller.
 
-            turnOutput = self.turningPIDController.calculate(
-                self.turningEncoder.getDistance(), state.angle
-            )
-            turnFeedForward = self.turnFeedForward.calculate(
-                self.turningPIDController.getSetpoint().velocity
-            )
+        turnOutput = self.turningPIDController.calculate(
+            self.turningEncoder.getDistance(), state.angle
+        )
+        turnFeedForward = self.turnFeedForward.calculate(
+            self.turningPIDController.getSetpoint().velocity
+        )
 
-            self.driveMotor.setVoltage(driveOutput + driveFeedForward)
-            self.turningMotor.setVoltage(turnOutput + turnFeedForward)
+        self.driveMotor.setVoltage(driveOutput + driveFeedForward)
+        self.turningMotor.setVoltage(turnOutput + turnFeedForward)
